@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Secure Access Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kernel Authority Terminal</title>
 
 <style>
 *{
   box-sizing:border-box;
-  font-family: "Courier New", monospace;
+  font-family: Consolas, monospace;
 }
 body{
   margin:0;
@@ -16,36 +17,31 @@ body{
   height:100vh;
   overflow:hidden;
 }
-
-/* TERMINAL */
 #terminal{
   padding:30px;
   font-size:15px;
   line-height:1.6;
 }
-.line{
-  opacity:0;
-  animation: show 0.2s forwards;
+.cursor::after{
+  content:"▮";
+  animation: blink 1s infinite;
 }
-@keyframes show{
-  to{opacity:1;}
+@keyframes blink{
+  50%{opacity:0;}
 }
-
-/* LOGIN */
 #login{
   position:absolute;
   top:50%;
   left:50%;
-  transform:translate(-50%,-40%);
+  transform:translate(-50%,-50%);
   width:320px;
-  background:rgba(0,0,0,0.9);
+  background:#000;
   border:1px solid #00ff66;
   padding:25px;
   display:none;
 }
 #login h2{
   margin:0 0 15px;
-  color:#00ff66;
   text-align:center;
 }
 input{
@@ -55,19 +51,14 @@ input{
   background:#000;
   border:1px solid #00ff66;
   color:#00ff66;
-  outline:none;
 }
 button{
   width:100%;
   padding:12px;
   background:#00ff66;
   border:none;
-  color:#000;
   font-weight:bold;
   cursor:pointer;
-}
-button:hover{
-  background:#00cc55;
 }
 </style>
 </head>
@@ -78,7 +69,7 @@ button:hover{
 
 <div id="login">
   <h2>ACCESS GRANTED</h2>
-  <input type="text" placeholder="Username">
+  <input placeholder="Username">
   <input type="password" placeholder="Password">
   <button>LOGIN</button>
 </div>
@@ -88,43 +79,43 @@ const terminal = document.getElementById("terminal");
 const login = document.getElementById("login");
 
 const lines = [
-  "> booting kernel authority...",
-  "> loading secure modules...",
-  "> initializing encrypted channel...",
-  "> verifying system integrity...",
-  "> connection established.",
-  "> access granted."
+  "Booting Kernel Authority v1.0",
+  "Loading secure modules...",
+  "Establishing encrypted channel...",
+  "System integrity verified.",
+  "Access granted."
 ];
 
-let index = 0;
+let lineIndex = 0;
+let charIndex = 0;
+let currentLine = "";
 
-function typeLine(){
-  if(index >= lines.length){
-    setTimeout(()=>{
-      login.style.display = "block";
-    },600);
+function type(){
+  if(lineIndex >= lines.length){
+    setTimeout(()=>login.style.display="block",500);
     return;
   }
 
-  const div = document.createElement("div");
-  div.className = "line";
-  terminal.appendChild(div);
+  currentLine += lines[lineIndex][charIndex] || "";
+  terminal.innerHTML =
+    terminal.innerHTML.split("<br>").slice(0,-1).join("<br>") +
+    "<br><span class='cursor'>" + currentLine + "</span>";
 
-  let text = lines[index];
-  let i = 0;
+  charIndex++;
 
-  const typing = setInterval(()=>{
-    div.textContent += text[i];
-    i++;
-    if(i >= text.length){
-      clearInterval(typing);
-      index++;
-      setTimeout(typeLine, 400);
-    }
-  },40);
+  if(charIndex > lines[lineIndex].length){
+    terminal.innerHTML += "<br>";
+    lineIndex++;
+    charIndex = 0;
+    currentLine = "";
+    setTimeout(type,400);
+  } else {
+    setTimeout(type,40);
+  }
 }
 
-typeLine();
+terminal.innerHTML = "<span class='cursor'></span>";
+type();
 </script>
 
 </body>
