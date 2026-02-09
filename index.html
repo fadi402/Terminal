@@ -3,59 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kernel Fadi Authority</title>
+<title>Kernel Authority</title>
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:#05070a;
-  color:#00ffb2;
-  font-family:JetBrains Mono, monospace;
+  background:#06080c;
+  color:#9fffe0;
+  font-family:Inter, sans-serif;
   height:100vh;
   overflow:hidden;
 }
 
-/* GRID */
+/* Subtle grid */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background:
-    linear-gradient(#00ffb211 1px, transparent 1px),
-    linear-gradient(90deg,#00ffb211 1px, transparent 1px);
-  background-size:40px 40px;
+    linear-gradient(#9fffe008 1px, transparent 1px),
+    linear-gradient(90deg,#9fffe008 1px, transparent 1px);
+  background-size:48px 48px;
   pointer-events:none;
 }
 
-/* GLITCH BRAND */
+/* Brand */
 #brand{
   position:fixed;
-  top:15px;
-  left:20px;
-  font-family:Inter;
-  font-weight:700;
-  letter-spacing:2px;
-  text-transform:uppercase;
-}
-#brand::after{
-  content:attr(data-text);
-  position:absolute;
-  left:2px;
-  top:0;
-  color:#00ffaa;
-  opacity:.6;
-  animation:glitch 2s infinite;
-}
-@keyframes glitch{
-  0%{clip-path:inset(0 0 80% 0)}
-  50%{clip-path:inset(40% 0 20% 0)}
-  100%{clip-path:inset(0 0 0 0)}
+  top:16px;
+  left:24px;
+  font-weight:600;
+  letter-spacing:1px;
+  opacity:.85;
 }
 
-/* BOOT */
+/* Boot */
 #boot{
   position:absolute;
   inset:0;
@@ -63,86 +48,102 @@ body::before{
   flex-direction:column;
   justify-content:center;
   align-items:center;
+  font-family:JetBrains Mono;
 }
-#bar{
-  width:300px;
-  height:6px;
-  border:1px solid #00ffb2;
-}
-#fill{
-  height:100%;
-  width:0%;
-  background:#00ffb2;
-}
+#bar{width:320px;height:5px;border:1px solid #9fffe0}
+#fill{height:100%;width:0;background:#9fffe0}
 
-/* TERMINAL */
+/* Terminal */
 #terminal{
-  padding:40px;
   display:none;
-  text-shadow:0 0 8px #00ffb255;
+  padding:48px;
+  font-family:JetBrains Mono;
+  font-size:14px;
+  opacity:.9;
 }
 .cursor::after{content:"▮";animation:blink 1s infinite}
 @keyframes blink{50%{opacity:0}}
 
-/* LOGIN */
+/* Login */
 #login{
+  display:none;
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
   width:360px;
-  background:rgba(0,255,178,0.06);
+  background:rgba(159,255,224,.06);
   backdrop-filter:blur(18px);
-  border:1px solid rgba(0,255,178,.3);
+  border:1px solid rgba(159,255,224,.25);
   border-radius:18px;
-  padding:30px;
-  display:none;
-  font-family:Inter;
+  padding:28px;
 }
+#login h3{margin:0 0 18px;text-align:center}
 input,button{
   width:100%;
   padding:14px;
   margin-top:12px;
   border-radius:10px;
-  border:1px solid rgba(0,255,178,.4);
+  border:1px solid rgba(159,255,224,.35);
   background:#000;
-  color:#00ffb2;
+  color:#9fffe0;
 }
 button{
-  background:#00ffb2;
+  background:#9fffe0;
   color:#000;
   font-weight:700;
   cursor:pointer;
 }
 
-/* DASHBOARD */
+/* Dashboard */
 #dashboard{
   display:none;
-  padding:60px;
-  font-family:Inter;
+  padding:70px 50px;
 }
 .cards{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:20px;
 }
 .card{
-  background:rgba(0,255,178,.05);
-  border:1px solid rgba(0,255,178,.25);
+  background:rgba(159,255,224,.05);
+  border:1px solid rgba(159,255,224,.2);
   border-radius:16px;
   padding:20px;
 }
-.card h3{margin:0 0 10px;font-weight:600}
+.card h4{margin:0 0 8px}
 .small{opacity:.6;font-size:13px}
+
+/* Map dots */
+.map{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:6px;
+}
+.dot{
+  height:6px;width:6px;
+  background:#9fffe0;
+  opacity:.5;
+  border-radius:50%;
+}
+
+/* Footer */
+#foot{
+  position:fixed;
+  bottom:12px;
+  right:18px;
+  font-size:12px;
+  opacity:.35;
+}
 </style>
 </head>
 
 <body>
 
-<div id="brand" data-text="Kernel Fadi Authority">Kernel Fadi Authority</div>
+<div id="brand">Kernel Authority</div>
 
 <!-- BOOT -->
 <div id="boot">
-  <div>Initializing Kernel Fadi Authority…</div>
+  <div>Initializing secure kernel…</div>
   <div id="bar"><div id="fill"></div></div>
 </div>
 
@@ -151,26 +152,49 @@ button{
 
 <!-- LOGIN -->
 <div id="login">
-  <h3 style="text-align:center;margin:0">AUTHORIZED ACCESS</h3>
+  <h3>Secure Access</h3>
   <input placeholder="Username">
   <input type="password" placeholder="Password">
-  <button onclick="enter()">ENTER SYSTEM</button>
+  <button onclick="enter()">Continue</button>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-  <h2>System Dashboard</h2>
-  <p class="small">Kernel Fadi Authority • Secure Environment</p>
+  <h2>System Overview</h2>
+  <p class="small">Enterprise secure environment</p>
+
   <div class="cards">
-    <div class="card"><h3>System Status</h3><p>Stable • Encrypted</p></div>
-    <div class="card"><h3>Security Level</h3><p>Maximum</p></div>
-    <div class="card"><h3>Active Modules</h3><p>12 Running</p></div>
-    <div class="card"><h3>User Privilege</h3><p>Owner Access</p></div>
+    <div class="card">
+      <h4>System Health</h4>
+      <p>Operational • Stable</p>
+    </div>
+
+    <div class="card">
+      <h4>AI Monitor</h4>
+      <p>Analysis running<br><span class="small">No anomalies detected</span></p>
+    </div>
+
+    <div class="card">
+      <h4>Activity Map</h4>
+      <div class="map">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>Access Level</h4>
+      <p>Owner Privilege</p>
+    </div>
   </div>
 </div>
 
+<div id="foot">Kernel Authority ©</div>
+
 <script>
-/* BOOT */
+/* Boot */
 let p=0;
 const fill=document.getElementById("fill");
 const boot=document.getElementById("boot");
@@ -178,22 +202,21 @@ const terminal=document.getElementById("terminal");
 const login=document.getElementById("login");
 
 const bootInt=setInterval(()=>{
-  p+=5;
-  fill.style.width=p+"%";
+  p+=4; fill.style.width=p+"%";
   if(p>=100){
     clearInterval(bootInt);
     boot.style.display="none";
     startTerminal();
   }
-},80);
+},90);
 
-/* TERMINAL */
+/* Terminal */
 const lines=[
-  "Kernel Fadi Authority v3.1",
-  "Loading AI subsystems…",
-  "Establishing encrypted channel…",
-  "Verifying system integrity…",
-  "All systems operational.",
+  "Kernel Authority v4.0",
+  "Loading security modules…",
+  "Initializing intelligence layer…",
+  "Verifying integrity…",
+  "Environment secure.",
   "Authentication required."
 ];
 let l=0,c=0,cur="";
@@ -214,11 +237,11 @@ function type(){
   if(c>lines[l].length){
     terminal.innerHTML+="<br>";
     l++;c=0;cur="";
-    setTimeout(type,500);
-  }else setTimeout(type,35);
+    setTimeout(type,450);
+  } else setTimeout(type,32);
 }
 
-/* LOGIN → DASHBOARD */
+/* Login */
 function enter(){
   login.style.display="none";
   terminal.style.display="none";
