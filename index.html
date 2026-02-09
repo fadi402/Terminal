@@ -5,27 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kernel Authority</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
   background:#06080c;
-  color:#9fffe0;
-  font-family:Inter, sans-serif;
+  color:#c8fff0;
+  font-family:Inter,sans-serif;
   height:100vh;
   overflow:hidden;
 }
 
-/* Subtle grid */
+/* Grid */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background:
-    linear-gradient(#9fffe008 1px, transparent 1px),
-    linear-gradient(90deg,#9fffe008 1px, transparent 1px);
+    linear-gradient(#c8fff008 1px, transparent 1px),
+    linear-gradient(90deg,#c8fff008 1px, transparent 1px);
   background-size:48px 48px;
   pointer-events:none;
 }
@@ -50,83 +50,77 @@ body::before{
   align-items:center;
   font-family:JetBrains Mono;
 }
-#bar{width:320px;height:5px;border:1px solid #9fffe0}
-#fill{height:100%;width:0;background:#9fffe0}
+#bar{width:320px;height:5px;border:1px solid #c8fff0}
+#fill{height:100%;width:0;background:#c8fff0}
 
-/* Terminal */
-#terminal{
+/* Menu */
+#menu{
   display:none;
-  padding:48px;
-  font-family:JetBrains Mono;
-  font-size:14px;
-  opacity:.9;
+  padding:80px 60px;
 }
-.cursor::after{content:"▮";animation:blink 1s infinite}
-@keyframes blink{50%{opacity:0}}
-
-/* Login */
-#login{
-  display:none;
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:360px;
-  background:rgba(159,255,224,.06);
-  backdrop-filter:blur(18px);
-  border:1px solid rgba(159,255,224,.25);
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+.menu{
+  background:rgba(200,255,240,.05);
+  border:1px solid rgba(200,255,240,.25);
   border-radius:18px;
   padding:28px;
-}
-#login h3{margin:0 0 18px;text-align:center}
-input,button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:10px;
-  border:1px solid rgba(159,255,224,.35);
-  background:#000;
-  color:#9fffe0;
-}
-button{
-  background:#9fffe0;
-  color:#000;
-  font-weight:700;
   cursor:pointer;
+  transition:.25s;
 }
+.menu:hover{
+  background:rgba(200,255,240,.08);
+  transform:translateY(-4px);
+}
+.menu h3{margin:0 0 10px}
+.menu p{opacity:.65;font-size:14px}
 
-/* Dashboard */
-#dashboard{
+/* Panels */
+.panel{
   display:none;
-  padding:70px 50px;
+  position:absolute;
+  inset:0;
+  padding:80px;
 }
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:20px;
+.back{
+  position:absolute;
+  top:20px;
+  right:30px;
+  cursor:pointer;
+  opacity:.6;
 }
-.card{
-  background:rgba(159,255,224,.05);
-  border:1px solid rgba(159,255,224,.2);
-  border-radius:16px;
-  padding:20px;
-}
-.card h4{margin:0 0 8px}
-.small{opacity:.6;font-size:13px}
 
-/* Map dots */
-.map{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  gap:6px;
+/* Globe */
+.globe{
+  width:320px;height:320px;
+  border-radius:50%;
+  border:1px solid rgba(200,255,240,.3);
+  position:relative;
+  animation:spin 20s linear infinite;
+  margin:auto;
 }
 .dot{
-  height:6px;width:6px;
-  background:#9fffe0;
-  opacity:.5;
+  position:absolute;
+  width:5px;height:5px;
+  background:#c8fff0;
   border-radius:50%;
+  opacity:.7;
 }
+.ray{
+  position:absolute;
+  width:2px;
+  height:120px;
+  background:linear-gradient(transparent,#c8fff0);
+  top:50%;left:50%;
+  transform-origin:top;
+  animation:pulse 2s infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.2}}
 
-/* Footer */
 #foot{
   position:fixed;
   bottom:12px;
@@ -147,48 +141,57 @@ button{
   <div id="bar"><div id="fill"></div></div>
 </div>
 
-<!-- TERMINAL -->
-<div id="terminal"></div>
+<!-- MENU -->
+<div id="menu">
+  <h2>System Access</h2>
+  <p style="opacity:.6">Select an internal module</p>
 
-<!-- LOGIN -->
-<div id="login">
-  <h3>Secure Access</h3>
-  <input placeholder="Username">
-  <input type="password" placeholder="Password">
-  <button onclick="enter()">Continue</button>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-  <h2>System Overview</h2>
-  <p class="small">Enterprise secure environment</p>
-
-  <div class="cards">
-    <div class="card">
-      <h4>System Health</h4>
-      <p>Operational • Stable</p>
+  <div class="menu-grid">
+    <div class="menu" onclick="openPanel('access')">
+      <h3>Access Portals</h3>
+      <p>Internal service gateways</p>
     </div>
-
-    <div class="card">
-      <h4>AI Monitor</h4>
-      <p>Analysis running<br><span class="small">No anomalies detected</span></p>
+    <div class="menu" onclick="openPanel('global')">
+      <h3>Global Activity</h3>
+      <p>Live cyber environment visualization</p>
     </div>
-
-    <div class="card">
-      <h4>Activity Map</h4>
-      <div class="map">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h4>Access Level</h4>
-      <p>Owner Privilege</p>
+    <div class="menu" onclick="openPanel('security')">
+      <h3>System Protection</h3>
+      <p>Kernel-level security status</p>
     </div>
   </div>
+</div>
+
+<!-- ACCESS -->
+<div class="panel" id="access">
+  <div class="back" onclick="back()">← Back</div>
+  <h2>Access Portals</h2>
+  <p>This module is currently private.</p>
+  <p>Public access will be enabled in a future release.</p>
+</div>
+
+<!-- GLOBAL -->
+<div class="panel" id="global">
+  <div class="back" onclick="back()">← Back</div>
+  <h2>Global Activity</h2>
+  <p class="small">Simulated cyber traffic visualization</p>
+  <div class="globe">
+    <div class="ray" style="transform:rotate(40deg)"></div>
+    <div class="ray" style="transform:rotate(140deg)"></div>
+    <div class="ray" style="transform:rotate(260deg)"></div>
+  </div>
+</div>
+
+<!-- SECURITY -->
+<div class="panel" id="security">
+  <div class="back" onclick="back()">← Back</div>
+  <h2>System Protection</h2>
+  <p>
+    This system is secured by <b>Kernel Authority’s internal protection layer</b>.
+    <br><br>
+    All operations are monitored, sandboxed, and isolated through controlled
+    kernel-level mechanisms to ensure stability and integrity.
+  </p>
 </div>
 
 <div id="foot">Kernel Authority ©</div>
@@ -198,54 +201,24 @@ button{
 let p=0;
 const fill=document.getElementById("fill");
 const boot=document.getElementById("boot");
-const terminal=document.getElementById("terminal");
-const login=document.getElementById("login");
+const menu=document.getElementById("menu");
 
 const bootInt=setInterval(()=>{
   p+=4; fill.style.width=p+"%";
   if(p>=100){
     clearInterval(bootInt);
     boot.style.display="none";
-    startTerminal();
+    menu.style.display="block";
   }
 },90);
 
-/* Terminal */
-const lines=[
-  "Kernel Authority v4.0",
-  "Loading security modules…",
-  "Initializing intelligence layer…",
-  "Verifying integrity…",
-  "Environment secure.",
-  "Authentication required."
-];
-let l=0,c=0,cur="";
-
-function startTerminal(){
-  terminal.style.display="block";
-  terminal.innerHTML="<span class='cursor'></span>";
-  type();
+function openPanel(id){
+  menu.style.display="none";
+  document.getElementById(id).style.display="block";
 }
-function type(){
-  if(l>=lines.length){
-    setTimeout(()=>login.style.display="block",600);
-    return;
-  }
-  cur+=lines[l][c]||"";
-  terminal.innerHTML=terminal.innerHTML.split("<br>").slice(0,-1).join("<br>")+"<br><span class='cursor'>"+cur+"</span>";
-  c++;
-  if(c>lines[l].length){
-    terminal.innerHTML+="<br>";
-    l++;c=0;cur="";
-    setTimeout(type,450);
-  } else setTimeout(type,32);
-}
-
-/* Login */
-function enter(){
-  login.style.display="none";
-  terminal.style.display="none";
-  document.getElementById("dashboard").style.display="block";
+function back(){
+  document.querySelectorAll(".panel").forEach(p=>p.style.display="none");
+  menu.style.display="block";
 }
 </script>
 
