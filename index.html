@@ -93,34 +93,16 @@ body::before{
   opacity:.6;
 }
 
-/* Globe */
-.globe{
-  width:320px;height:320px;
-  border-radius:50%;
-  border:1px solid rgba(200,255,240,.3);
-  position:relative;
-  animation:spin 20s linear infinite;
-  margin:auto;
+/* Globe Canvas */
+#globeCanvas{
+  width:100%;
+  height:70vh;
+  display:block;
+  cursor:grab;
 }
-.dot{
-  position:absolute;
-  width:5px;height:5px;
-  background:#c8fff0;
-  border-radius:50%;
-  opacity:.7;
-}
-.ray{
-  position:absolute;
-  width:2px;
-  height:120px;
-  background:linear-gradient(transparent,#c8fff0);
-  top:50%;left:50%;
-  transform-origin:top;
-  animation:pulse 2s infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{50%{opacity:.2}}
+#globeCanvas:active{cursor:grabbing}
 
+/* Footer */
 #foot{
   position:fixed;
   bottom:12px;
@@ -153,7 +135,7 @@ body::before{
     </div>
     <div class="menu" onclick="openPanel('global')">
       <h3>Global Activity</h3>
-      <p>Live cyber environment visualization</p>
+      <p>Network & world overview</p>
     </div>
     <div class="menu" onclick="openPanel('security')">
       <h3>System Protection</h3>
@@ -174,12 +156,8 @@ body::before{
 <div class="panel" id="global">
   <div class="back" onclick="back()">← Back</div>
   <h2>Global Activity</h2>
-  <p class="small">Simulated cyber traffic visualization</p>
-  <div class="globe">
-    <div class="ray" style="transform:rotate(40deg)"></div>
-    <div class="ray" style="transform:rotate(140deg)"></div>
-    <div class="ray" style="transform:rotate(260deg)"></div>
-  </div>
+  <p style="opacity:.55">Network & global overview</p>
+  <canvas id="globeCanvas"></canvas>
 </div>
 
 <!-- SECURITY -->
@@ -220,6 +198,82 @@ function back(){
   document.querySelectorAll(".panel").forEach(p=>p.style.display="none");
   menu.style.display="block";
 }
+</script>
+
+<!-- THREE.JS for Globe -->
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script>
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+
+let renderer = new THREE.WebGLRenderer({
+  canvas: document.getElementById("globeCanvas"),
+  antialias:true,
+  alpha:true
+});
+renderer.setSize(window.innerWidth, window.innerHeight * 0.7);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+/* Lights */
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+let light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5,3,5);
+scene.add(light);
+
+/* Earth */
+let texture = new THREE.TextureLoader().load(
+  "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/earth.jpg"
+);
+
+let globe = new THREE.Mesh(
+  new THREE.SphereGeometry(1,64,64),
+  new THREE.MeshStandardMaterial({ map:texture })
+);
+scene.add(globe);
+
+/* Rays */
+for(let i=0;i<40;i++){
+  let ray = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.002,0.002,0.6),
+    new THREE.MeshBasicMaterial({ color:0xc8fff0 })
+  );
+  ray.position.y = 1;
+  ray.rotation.z = Math.random()*Math.PI;
+  ray.rotation.x = Math.random()*Math.PI;
+  globe.add(ray);
+}
+
+/* Mouse Control */
+let isDragging=false, prev={x:0,y:0};
+
+renderer.domElement.addEventListener("mousedown",e=>{
+  isDragging=true;
+  prev.x=e.clientX; prev.y=e.clientY;
+});
+window.addEventListener("mouseup",()=>isDragging=false);
+window.addEventListener("mousemove",e=>{
+  if(!isDragging) return;
+  let dx=(e.clientX-prev.x)*0.005;
+  let dy=(e.clientY-prev.y)*0.005;
+  globe.rotation.y += dx;
+  globe.rotation.x += dy;
+  prev.x=e.clientX; prev.y=e.clientY;
+});
+
+/* Animate */
+function animate(){
+  requestAnimationFrame(animate);
+  renderer.render(scene,camera);
+}
+animate();
+
+/* Resize */
+window.addEventListener("resize",()=>{
+  camera.aspect=window.innerWidth/(window.innerHeight*0.7);
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight*0.7);
+});
 </script>
 
 </body>
