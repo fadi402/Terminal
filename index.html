@@ -3,33 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kernel Authority — Private Access</title>
+<title>Kernel Authority — Private Portfolio</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
 body{
   margin:0;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:radial-gradient(circle at top, #111827, #020617);
   font-family:Inter,sans-serif;
-  color:#e6e6e6;
-  overflow:hidden;
+  background:radial-gradient(circle at top, #0f172a, #020617);
+  color:#e5e7eb;
+  overflow-x:hidden;
 }
 
-/* 🌍 Background Globe */
+/* 🌍 GLOBE */
 .globe{
-  position:absolute;
-  width:420px;
-  height:420px;
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:460px;
+  height:460px;
   border-radius:50%;
+  transform:translate(-50%,-50%);
   border:1px solid rgba(255,255,255,.05);
-  box-shadow:0 0 80px rgba(120,160,255,.12);
-  animation:spin 40s linear infinite;
+  box-shadow:0 0 90px rgba(120,160,255,.12);
+  animation:spin 50s linear infinite;
+  z-index:0;
 }
 .globe::before{
   content:"";
@@ -42,25 +44,31 @@ body{
       rgba(255,255,255,.08),
       rgba(255,255,255,.08) 1px,
       transparent 1px,
-      transparent 22px
+      transparent 24px
     );
 }
 @keyframes spin{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
+  from{transform:translate(-50%,-50%) rotate(0deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg)}
 }
 
-/* Main wrapper */
-.wrapper{
-  position:relative;
+/* SECTION BASE */
+section{
+  min-height:100vh;
   display:flex;
-  flex-direction:column;
   align-items:center;
-  gap:26px;
+  justify-content:center;
+  position:relative;
   z-index:2;
 }
 
-/* 🕰 CLOCK */
+/* HERO */
+.hero{
+  flex-direction:column;
+  gap:28px;
+}
+
+/* CLOCK */
 .clock{
   width:260px;
   height:260px;
@@ -68,12 +76,11 @@ body{
   background:radial-gradient(circle at 30% 30%, #1e293b, #020617);
   border:1px solid rgba(255,255,255,.08);
   position:relative;
-  box-shadow:0 0 40px rgba(120,160,255,.15);
   animation:breath 4s ease-in-out infinite;
 }
 @keyframes breath{
-  0%,100%{box-shadow:0 0 35px rgba(120,160,255,.12)}
-  50%{box-shadow:0 0 60px rgba(120,160,255,.25)}
+  0%,100%{box-shadow:0 0 35px rgba(120,160,255,.15)}
+  50%{box-shadow:0 0 70px rgba(120,160,255,.35)}
 }
 
 .number{
@@ -82,7 +89,7 @@ body{
   display:flex;
   justify-content:center;
   font-size:14px;
-  opacity:.5;
+  opacity:.45;
 }
 .number span{transform:translateY(16px)}
 
@@ -93,10 +100,9 @@ body{
   transform-origin:bottom;
   transform:translate(-50%,-100%) rotate(0deg);
   border-radius:4px;
-  cursor:grab;
 }
-.hour{width:5px;height:70px;background:#e6e6e6}
-.minute{width:3px;height:95px;background:#9fb3ff}
+.hour{width:5px;height:70px;background:#e5e7eb}
+.minute{width:3px;height:95px;background:#93c5fd}
 
 .pin{
   position:absolute;
@@ -109,53 +115,29 @@ body{
   transform:translate(-50%,-50%);
 }
 
-/* STATUS */
-.status{
-  font-size:13px;
-  opacity:.65;
-  letter-spacing:.4px;
-}
-
-/* 🔓 UNLOCK */
-.unlocked .clock{
-  box-shadow:0 0 90px rgba(255,210,140,.5);
-}
-.unlocked .panel{
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-}
-
-/* 🧊 Glass Panel */
-.panel{
-  width:320px;
+/* GLASS PANEL */
+.glass{
   background:rgba(255,255,255,.08);
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(18px);
   border:1px solid rgba(255,255,255,.18);
-  border-radius:20px;
-  padding:24px;
+  border-radius:22px;
+  padding:28px;
+  max-width:420px;
   text-align:center;
-  opacity:0;
-  transform:translateY(20px);
-  transition:.7s ease;
-  pointer-events:none;
-}
-.panel h3{
-  margin:0 0 10px;
-  font-weight:600;
-}
-.panel p{
-  font-size:13px;
-  opacity:.75;
 }
 
-/* Branding */
+/* TEXT */
+h1,h2{margin:0;font-weight:600}
+p{opacity:.75;font-size:14px;line-height:1.6}
+
+/* BRAND */
 .brand{
-  position:absolute;
+  position:fixed;
   bottom:22px;
+  right:26px;
   font-size:12px;
   letter-spacing:2px;
-  opacity:.45;
+  opacity:.4;
 }
 </style>
 </head>
@@ -164,28 +146,49 @@ body{
 
 <div class="globe"></div>
 
-<div class="wrapper unlocked" id="app">
+<!-- HERO -->
+<section class="hero">
   <div class="clock">
     <div class="number" style="transform:rotate(0deg)"><span>12</span></div>
     <div class="number" style="transform:rotate(90deg)"><span>3</span></div>
     <div class="number" style="transform:rotate(180deg)"><span>6</span></div>
     <div class="number" style="transform:rotate(270deg)"><span>9</span></div>
-    <div class="hand hour" id="hour"></div>
-    <div class="hand minute" id="minute"></div>
+    <div class="hand hour"></div>
+    <div class="hand minute"></div>
     <div class="pin"></div>
   </div>
 
-  <div class="status">Private environment · Authorized access</div>
-
-  <div class="panel">
-    <h3>Secure Portfolio Space</h3>
+  <div class="glass">
+    <h1>Private Portfolio Space</h1>
     <p>
-      This environment is privately maintained by<br>
-      Kernel Authority.<br><br>
-      Public access will be enabled soon.
+      A calm, controlled digital environment.<br>
+      Designed for precision, not noise.
     </p>
   </div>
-</div>
+</section>
+
+<!-- ABOUT -->
+<section>
+  <div class="glass">
+    <h2>Philosophy</h2>
+    <p>
+      True systems do not seek attention.<br>
+      They remain silent, stable, and intentional.
+    </p>
+  </div>
+</section>
+
+<!-- SYSTEM -->
+<section>
+  <div class="glass">
+    <h2>System Status</h2>
+    <p>
+      Maintained and secured by<br>
+      Kernel Authority.<br><br>
+      Public access will be enabled when ready.
+    </p>
+  </div>
+</section>
 
 <div class="brand">KERNEL AUTHORITY</div>
 
